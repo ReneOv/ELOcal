@@ -58,6 +58,8 @@ class LeaguePlayers(models.Model):
     score = models.FloatField(default=1500)
     adjustedScore = models.FloatField(default=0)
     highScore = models.FloatField(default=0)
+    qualifiedScore = models.FloatField(default=0)
+    tier = models.CharField(max_length=255)
     attendanceBoost = models.FloatField(default=0)
     eventsTotalScore = models.FloatField(default=0)
     confidenceRating = models.FloatField(default=0)

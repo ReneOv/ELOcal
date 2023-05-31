@@ -58,6 +58,8 @@ class LeaguePlayersSerializer(serializers.ModelSerializer):
             'score',
             'adjustedScore',
             'highScore',
+            'qualifiedScore',
+            'tier',
             'attendanceBoost',
             'eventsTotalScore',
             'confidenceRating',

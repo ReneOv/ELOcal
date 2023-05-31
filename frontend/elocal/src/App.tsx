@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Box } from '@mui/material';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { BaseRoutes, AppRoutes } from './routes';
 import './App.css';
+import { Layout, NoLayout } from './components/Layout';
+
+const Pages = () => {
+    return (
+        <Box sx={{ display: 'flex' }}>
+            <Routes>
+                <Route element={<NoLayout />}>
+                    {BaseRoutes.map((route, index) => (
+                        <Route path={route.path} key={index} element={route.outlet} />
+                    ))}
+                </Route>
+                <Route element={<Layout />}>
+                    {AppRoutes.map((route, index) => (
+                        <Route
+                            path={route.path}
+                            key={index}
+                            element={<ProtectedRoute outlet={route.outlet} />}
+                        />
+                    ))}
+                </Route>
+            </Routes>
+        </Box>
+    );
+};
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    return (
+        <BrowserRouter>
+            <Pages />
+        </BrowserRouter>
+    );
+};
 
 export default App;
