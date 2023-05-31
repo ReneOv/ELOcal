@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../Sidebar';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 
 interface Props {
     children?: any;

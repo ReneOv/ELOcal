@@ -7,7 +7,7 @@ import { Layout, NoLayout } from './components/Layout';
 
 const Pages = () => {
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', flexGrow: 1 }}>
             <Routes>
                 <Route element={<NoLayout />}>
                     {BaseRoutes.map((route, index) => (

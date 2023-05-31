@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -156,12 +155,14 @@ export const Sidebar = () => {
                                                 justifyContent: 'center',
                                             }}
                                         >
-                                            {route.icon != '' ? route.icon : <RadioButtonChecked />}
+                                            {route.icon !== '' ? route.icon : <RadioButtonChecked />}
                                         </ListItemIcon>
                                         <ListItemText primary={route.name} sx={{ opacity: open ? 1 : 0 }} />
                                     </ListItemButton>
                                 </ListItem>
                             );
+                        else
+                            return <></>      
                     })}
                 </List>
             </Drawer>

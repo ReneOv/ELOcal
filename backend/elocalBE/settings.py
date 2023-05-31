@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'elocalBE.league',
+    'elocalBE.elocalAlgorithm'
 ]
 
 MIDDLEWARE = [

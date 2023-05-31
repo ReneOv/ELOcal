@@ -50,6 +50,7 @@ class LeagueSerializer(serializers.ModelSerializer):
 class LeaguePlayersSerializer(serializers.ModelSerializer):
     class Meta:
         model = LeaguePlayers
+        depth = 1
         fields = [
             'league',
             'player',
@@ -69,6 +70,7 @@ class LeaguePlayersSerializer(serializers.ModelSerializer):
 class LeagueEventsSerializer(serializers.ModelSerializer):
     class Meta:
         model = LeagueEvents
+        depth = 1
         fields = [
             'league',
             'event',
@@ -78,6 +80,7 @@ class LeagueEventsSerializer(serializers.ModelSerializer):
 class EventPlayersSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventPlayers
+        depth = 1
         fields = [
             'event',
             'player',

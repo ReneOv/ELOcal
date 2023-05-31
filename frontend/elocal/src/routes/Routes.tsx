@@ -1,6 +1,9 @@
 import { EmojiEvents, Event, Home } from "@mui/icons-material";
 
 import { Dashboard } from "../pages/Dashboard";
+import { LeagueIndex } from "../pages/League/LeagueIndex";
+import { EventIndex } from "../pages/Event/EventIndex";
+import { LeagueRanking } from "../pages/League/LeagueRanking";
 
 interface SubChildren {
     path: string;
@@ -59,15 +62,22 @@ export const AppRoutes: Route[] = [
         name: 'Leagues',
         path: '/leagues',
         icon: <EmojiEvents />,
-        outlet: <>Leagues</>,
+        outlet: <LeagueIndex />,
         sidebar: true
+    },
+    {
+        name: 'League Ranking',
+        path: '/leagues/:leagueId/ranking',
+        icon: '',
+        outlet: <LeagueRanking />,
+        sidebar: false,
     },
     // Events
     {
         name: 'Events',
         path: '/events',
         icon: <Event />,
-        outlet: <>Events</>,
+        outlet: <EventIndex />,
         sidebar: true
     }
 ]
