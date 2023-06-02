@@ -1,6 +1,5 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from django.core.serializers import serialize
 from django.db import transaction
 import pysmashgg
 import environ
@@ -96,7 +95,6 @@ class LeagueViewSet(viewsets.ModelViewSet):
                     leaguePlayer.adjustedScore = 0
                     leaguePlayer.highScore = 0
                     leaguePlayer.qualifiedScore = 0
-                    leaguePlayer.tier = ''
                     leaguePlayer.attendanceBoost = 0
                     leaguePlayer.eventsTotalScore = 0
                     leaguePlayer.confidenceRating = 350
@@ -319,10 +317,48 @@ class LeagueViewSet(viewsets.ModelViewSet):
 
                     leaguePlayer.save()
 
-
         except Exception as e:
             error = True
             print('Error at add_event to league')
+            print(e)
+
+        if error:
+            return Response(status=400)
+        else:
+            return Response(status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['get'])
+    def update_player_ranking(self, request, pk):
+        error = False
+
+         # Get league object and its players
+        league_obj = self.get_object()
+        players = league_obj.players.all()
+
+        try:
+            with transaction.atomic():
+                for player in players:
+                    leaguePlayer = LeaguePlayers.objects.filter(league=league_obj, player=player).first()
+
+                    if leaguePlayer.eventsTotalScore <= league_obj.scoreMinimum:
+                        p_boost = 0
+                    else:
+                        p_difference = leaguePlayer.eventsTotalScore - league_obj.scoreThreshold
+                        if p_difference > 0:
+                            p_boost = league_obj.participationBoostPercent
+                        else: 
+                            p_boost = league_obj.participationBoostPercent + ((p_difference / league_obj.scoreRange) * league_obj.participationBoostPercent)
+                    
+                    p_elo = leaguePlayer.score * ((1 - league_obj.participationBoostPercent) + p_boost)
+
+                    leaguePlayer.adjustedScore = p_elo
+                    leaguePlayer.attendanceBoost = p_boost
+
+                    leaguePlayer.save()
+                
+        except Exception as e:
+            error = True
+            print('Error at update_player_ranking')
             print(e)
 
         if error:

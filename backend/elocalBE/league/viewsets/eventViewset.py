@@ -1,12 +1,13 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from django.db import transaction
 from datetime import datetime
 import environ
 import pysmashgg
 
 from elocalBE.league.models import Event, Player, EventPlayers
-from elocalBE.league.serializers import EventSerializer
+from elocalBE.league.serializers import EventSerializer, EventPlayersSerializer
 
 env = environ.Env()
 environ.Env.read_env()
@@ -18,6 +19,15 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Event.objects.all()
+    
+    @action(detail=True, methods=['get'])
+    def get_placements(self, request, pk):
+        error = False
+        event_obj = self.get_object()
+        players = EventPlayers.objects.filter(event=event_obj).all()
+        serializer = EventPlayersSerializer(players, many=True)
+
+        return Response(serializer.data)
     
     def create(self, request, *args, **kwargs):
         error = False

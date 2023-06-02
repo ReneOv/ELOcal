@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, TablePagination, TableSortLabel } from '@mui/material';
+import { Box, TablePagination, TableSortLabel, Typography } from '@mui/material';
 import { useParams } from "react-router-dom";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,6 +20,7 @@ interface Data {
     adjustedScore: number;
     highScore: number;
     score: number;
+    tier: string;
 }
 
 interface HeadCell {
@@ -102,6 +103,12 @@ const headCells: readonly HeadCell[] = [
         label: 'High-Score',
     },
     {
+        id: 'tier',
+        numeric: false,
+        disablePadding: false,
+        label: 'Tier',
+    },
+    {
         id: 'score',
         numeric: true,
         disablePadding: false,
@@ -121,19 +128,26 @@ function RankingTableHead(props: RankingTableProps) {
     return (
         <TableHead>
             <TableRow>
+                <TableCell
+                        key={'num'}
+                        sx={{backgroundColor: 'lightblue'}}
+                    >
+                        <strong>#</strong>
+                    </TableCell>
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.numeric ? 'left' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
+                        sx={{backgroundColor: 'lightblue'}}
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}
                             direction={orderBy === headCell.id ? order : 'asc'}
                             onClick={createSortHandler(headCell.id)}
                         >
-                            {headCell.label}
+                            <strong>{headCell.label}</strong>
                             {orderBy === headCell.id ? (
                                 <Box component="span" sx={visuallyHidden}>
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -160,8 +174,8 @@ export const LeagueRanking = () => {
         event: React.MouseEvent<unknown>,
         property: keyof Data,
     ) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
+        const isAsc = orderBy === property && order === 'desc';
+        setOrder(isAsc ? 'asc' : 'desc');
         setOrderBy(property);
     };
 
@@ -189,7 +203,7 @@ export const LeagueRanking = () => {
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage,
             ),
-        [order, orderBy, page, rowsPerPage],
+        [rows, order, orderBy, page, rowsPerPage],
     );
 
     useEffect(() => {
@@ -207,6 +221,7 @@ export const LeagueRanking = () => {
                     tops: Math.round(entry.tops),
                     adjustedScore: Math.round(entry.adjustedScore),
                     highScore: Math.round(entry.highScore),
+                    tier: entry.tier,
                     score: Math.round(entry.score)
                 };
             }));
@@ -214,55 +229,62 @@ export const LeagueRanking = () => {
     }, [ranking])
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <TableContainer>
-                    <Table
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                    >
-                        <RankingTableHead
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
-                        />
-                        <TableBody>
-                            {visibleRows.map((row, index) => {
+        <Box sx={{ width: '100%', p: 2 }}>
+            <Typography variant="h4">
+                {ranking[0]?.league.name}
+            </Typography>
+            <Box sx={{ width: '100%', p: 1 }}>
+                <Paper sx={{ width: '100%', mb: 2 }}>
+                    <TableContainer>
+                        <Table
+                            sx={{ minWidth: 750 }}
+                            aria-labelledby="tableTitle"
+                        >
+                            <RankingTableHead
+                                order={order}
+                                orderBy={orderBy}
+                                onRequestSort={handleRequestSort}
+                                rowCount={rows.length}
+                            />
+                            <TableBody>
+                                {visibleRows.map((row, index) => {
 
-                                return (
-                                    <TableRow>
-                                        <TableCell component="th" scope="row">{row.name}</TableCell>
-                                        <TableCell align="center">{row.events}</TableCell>
-                                        <TableCell align="center">{row.tops}</TableCell>
-                                        <TableCell align="center">{row.adjustedScore}</TableCell>
-                                        <TableCell align="center">{row.highScore}</TableCell>
-                                        <TableCell align="center">{row.score}</TableCell>
+                                    return (
+                                        <TableRow>
+                                            <TableCell align="center">{index + 1 + (page)*rowsPerPage}</TableCell>
+                                            <TableCell scope="row">{row.name}</TableCell>
+                                            <TableCell align="center">{row.events}</TableCell>
+                                            <TableCell align="center">{row.tops}</TableCell>
+                                            <TableCell align="center">{row.adjustedScore}</TableCell>
+                                            <TableCell align="center">{row.highScore === 0 ? 'N/Q' : row.highScore}</TableCell>
+                                            <TableCell align="center">{row.highScore === 0 ? `<${row.tier}>` : row.tier}</TableCell>
+                                            <TableCell align="center">{row.score}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: (53) * emptyRows,
+                                        }}
+                                    >
+                                        <TableCell colSpan={6} />
                                     </TableRow>
-                                );
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (53) * emptyRows,
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 20, 30, 40, 50]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Paper>
+            </Box>
         </Box>
     );
 }

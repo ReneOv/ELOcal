@@ -4,6 +4,8 @@ import { Dashboard } from "../pages/Dashboard";
 import { LeagueIndex } from "../pages/League/LeagueIndex";
 import { EventIndex } from "../pages/Event/EventIndex";
 import { LeagueRanking } from "../pages/League/LeagueRanking";
+import { LeagueDetails } from "../pages/League/LeagueDetails";
+import { EventDetails } from "../pages/Event/EventDetails";
 
 interface SubChildren {
     path: string;
@@ -72,6 +74,13 @@ export const AppRoutes: Route[] = [
         outlet: <LeagueRanking />,
         sidebar: false,
     },
+    {
+        name: 'League Details',
+        path: '/leagues/:leagueId/details',
+        icon: '',
+        outlet: <LeagueDetails />,
+        sidebar: false,
+    },
     // Events
     {
         name: 'Events',
@@ -79,5 +88,12 @@ export const AppRoutes: Route[] = [
         icon: <Event />,
         outlet: <EventIndex />,
         sidebar: true
-    }
+    },
+    {
+        name: 'Event Details',
+        path: '/events/:eventId/details',
+        icon: '',
+        outlet: <EventDetails />,
+        sidebar: false,
+    },
 ]

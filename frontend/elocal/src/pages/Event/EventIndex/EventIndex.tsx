@@ -1,9 +1,11 @@
 import { Box, Button, Card, CardActions, CardContent, Grid, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { getAllEvents } from "../../../services/event.service";
+import { useNavigate } from "react-router-dom";
 
 export const EventIndex = () => {
     const [events, setEvents] = useState<any[]>([]);
+	const navigate = useNavigate();
 
     const fetchEvents = async () => {
         const eventRes = await getAllEvents();
@@ -19,9 +21,6 @@ export const EventIndex = () => {
             <Typography variant="h4">
                 Events
             </Typography>
-            <Button variant="contained">
-                Import Event
-            </Button>
             <Box sx={{ flexGrow: 1, p: 2}}>
                 <Grid container spacing={3}>
                     {events.map((event, key) => (
@@ -39,11 +38,8 @@ export const EventIndex = () => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small">
+                                    <Button size="small" onClick={()=>(navigate(`/events/${key + 1}/details`))}>
                                         View Details
-                                    </Button>
-                                    <Button size="small">
-                                        Add to League
                                     </Button>
                                 </CardActions>
                             </Card>

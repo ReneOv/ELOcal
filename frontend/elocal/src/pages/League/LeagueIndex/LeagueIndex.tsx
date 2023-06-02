@@ -21,9 +21,9 @@ export const LeagueIndex = () => {
             <Typography variant="h4">
                 Leagues
             </Typography>
-            <Button variant="contained">
+            {/* <Button variant="contained">
                 Create New League
-            </Button>
+            </Button> */}
             <Box sx={{ flexGrow: 1, p: 2}}>
                 <Grid container spacing={3} sx={{ flexGrow: 1}}>
                     {leagues.map((league, key) => (
